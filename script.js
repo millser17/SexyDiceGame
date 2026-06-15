@@ -1,3 +1,5 @@
+window.addEventListener("DOMContentLoaded", () => {
+
 let rollCount = 0;
 let songIndex = 0;
 let currentPlayer = 1;
@@ -38,10 +40,8 @@ function rollDice() {
   output.textContent = `Rolled: ${d1} + ${d2} = ${total}`;
   counter.textContent = `Roll count: ${rollCount}`;
 
-  // switch turns every roll
   switchPlayer();
 
-  // every 7 rolls play a song
   if (rollCount % 7 === 0) {
     playSong();
   }
@@ -55,9 +55,10 @@ function playSong() {
   if (songIndex >= songs.length) songIndex = 0;
 }
 
+// EVENTS
+
 document.getElementById("rollBtn").addEventListener("click", rollDice);
 
-// spacebar support
 document.addEventListener("keydown", (e) => {
   if (e.code === "Space") {
     e.preventDefault();
@@ -75,9 +76,10 @@ document.getElementById("startBtn").addEventListener("click", () => {
   currentPlayer = 1;
   updatePlayerDisplay();
 
-  // unlock audio on mobile
   player.play().then(() => {
     player.pause();
     player.currentTime = 0;
   }).catch(() => {});
+});
+
 });
