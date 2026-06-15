@@ -1,20 +1,22 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Dice Music</title>
-</head>
-<body>
-
 <h1>Dice Music</h1>
 
-<button id="rollBtn">Roll Dice</button>
+<div id="setup">
+  <input id="p1" placeholder="Player 1 name">
+  <input id="p2" placeholder="Player 2 name">
+  <button id="startBtn">Start Game</button>
+</div>
 
-<p id="output">Roll result will appear here</p>
-<p id="counter">Roll count: 0</p>
+<hr>
 
-<audio id="player" controls></audio>
+<div id="game" style="display:none;">
+  <h2 id="activePlayer">Player: -</h2>
+
+  <button id="rollBtn">Roll Dice</button>
+
+  <p id="output">Roll result will appear here</p>
+  <p id="counter">Roll count: 0</p>
+
+  <audio id="player" controls></audio>
+</div>
 
 <script src="script.js"></script>
-
-</body>
-</html>
