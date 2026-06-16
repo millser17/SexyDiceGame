@@ -5,64 +5,50 @@
 </head>
 <body>
 
-    <h1>Dice Music</h1>
+<h1>Dice Music</h1>
 
-    <div id="setup">
+<div id="setup">
 
-        <div>
-            <input id="p1" placeholder="Player 1 Name">
-        </div>
+    <input id="p1" placeholder="Player 1 Name">
+    <br><br>
 
-        <br>
+    <select id="p1Song"></select>
 
-        <div>
-            <input id="p2" placeholder="Player 2 Name">
-        </div>
+    <br><br>
 
-        <br>
+    <input id="p2" placeholder="Player 2 Name">
+    <br><br>
 
-        <div>
-            <label for="songSelect">Starting Song:</label>
+    <select id="p2Song"></select>
 
-            <select id="songSelect">
-                <option value="0">Song 1</option>
-                <option value="1">Song 2</option>
-            </select>
-        </div>
+    <br><br>
 
-        <br>
+    <button id="startBtn">Start Game</button>
 
-        <button id="startBtn">
-            Start Game
-        </button>
+</div>
 
-    </div>
+<hr>
 
-    <hr>
+<div id="game" style="display:none;">
 
-    <div id="game" style="display:none;">
+    <h2 id="activePlayer"></h2>
 
-        <h2 id="activePlayer">
-            Current Player
-        </h2>
+    <button id="rollBtn">Roll Dice</button>
 
-        <button id="rollBtn">
-            Roll Dice
-        </button>
+    <p id="output"></p>
+    <p id="counter"></p>
 
-        <p id="output">
-            Roll result will appear here
-        </p>
+    <h3>Now Playing</h3>
+    <p id="nowPlaying"></p>
 
-        <p id="counter">
-            Roll Count: 0
-        </p>
+    <h3>Queue</h3>
+    <ul id="queueList"></ul>
 
-        <audio id="player" controls></audio>
+    <audio id="player" controls></audio>
 
-    </div>
+</div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
