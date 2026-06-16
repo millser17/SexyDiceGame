@@ -1,5 +1,3 @@
-window.addEventListener("DOMContentLoaded", () => {
-
 let rollCount = 0;
 let songIndex = 0;
 let currentPlayer = 1;
@@ -8,8 +6,8 @@ let player1Name = "Player 1";
 let player2Name = "Player 2";
 
 const songs = [
-  "./music/song1.mp3",
-  "./music/song2.mp3"
+    "./music/song1.mp3",
+    "./music/song2.mp3"
 ];
 
 const output = document.getElementById("output");
@@ -21,65 +19,122 @@ const setup = document.getElementById("setup");
 const game = document.getElementById("game");
 
 function updatePlayerDisplay() {
-  const name = currentPlayer === 1 ? player1Name : player2Name;
-  activePlayer.textContent = `Player: ${name}`;
+
+    if (currentPlayer === 1) {
+        activePlayer.textContent =
+            `Current Player: ${player1Name}`;
+    } else {
+        activePlayer.textContent =
+            `Current Player: ${player2Name}`;
+    }
 }
 
 function switchPlayer() {
-  currentPlayer = currentPlayer === 1 ? 2 : 1;
-  updatePlayerDisplay();
-}
 
-function rollDice() {
-  const d1 = Math.floor(Math.random() * 6) + 1;
-  const d2 = Math.floor(Math.random() * 6) + 1;
-  const total = d1 + d2;
+    if (currentPlayer === 1) {
+        currentPlayer = 2;
+    } else {
+        currentPlayer = 1;
+    }
 
-  rollCount++;
-
-  output.textContent = `Rolled: ${d1} + ${d2} = ${total}`;
-  counter.textContent = `Roll count: ${rollCount}`;
-
-  switchPlayer();
-
-  if (rollCount % 7 === 0) {
-    playSong();
-  }
+    updatePlayerDisplay();
 }
 
 function playSong() {
-  player.src = songs[songIndex];
-  player.play();
 
-  songIndex++;
-  if (songIndex >= songs.length) songIndex = 0;
+    songIndex++;
+
+    if (songIndex >= songs.length) {
+        songIndex = 0;
+    }
+
+    player.src = songs[songIndex];
+    player.play();
 }
 
-// EVENTS
+function rollDice() {
 
-document.getElementById("rollBtn").addEventListener("click", rollDice);
+    const d1 =
+        Math.floor(Math.random() * 6) + 1;
+
+    const d2 =
+        Math.floor(Math.random() * 6) + 1;
+
+    const total = d1 + d2;
+
+    const playerName =
+        currentPlayer === 1
+            ? player1Name
+            : player2Name;
+
+    const hardRoll =
+        d1 === d2 &&
+        [4, 6, 8, 10].includes(total);
+
+    rollCount++;
+
+    if (hardRoll) {
+
+        output.textContent =
+            `${playerName} rolled HARD ${total}! (${d1}+${d2})`;
+
+    } else {
+
+        output.textContent =
+            `${playerName} rolled ${d1} + ${d2} = ${total}`;
+
+    }
+
+    counter.textContent =
+        `Roll Count: ${rollCount}`;
+
+    if (rollCount % 7 === 0) {
+        playSong();
+    }
+
+    switchPlayer();
+}
+
+document
+    .getElementById("startBtn")
+    .addEventListener("click", () => {
+
+        player1Name =
+            document.getElementById("p1").value ||
+            "Player 1";
+
+        player2Name =
+            document.getElementById("p2").value ||
+            "Player 2";
+
+        songIndex =
+            parseInt(
+                document.getElementById("songSelect").value
+            );
+
+        setup.style.display = "none";
+        game.style.display = "block";
+
+        currentPlayer = 1;
+
+        updatePlayerDisplay();
+
+        player.src = songs[songIndex];
+        player.play();
+    });
+
+document
+    .getElementById("rollBtn")
+    .addEventListener("click", rollDice);
 
 document.addEventListener("keydown", (e) => {
-  if (e.code === "Space") {
-    e.preventDefault();
-    rollDice();
-  }
-});
 
-document.getElementById("startBtn").addEventListener("click", () => {
-  player1Name = document.getElementById("p1").value || "Player 1";
-  player2Name = document.getElementById("p2").value || "Player 2";
-
-  setup.style.display = "none";
-  game.style.display = "block";
-
-  currentPlayer = 1;
-  updatePlayerDisplay();
-
-  player.play().then(() => {
-    player.pause();
-    player.currentTime = 0;
-  }).catch(() => {});
-});
+    if (
+        e.code === "Space" &&
+        game.style.display !== "none"
+    ) {
+        e.preventDefault();
+        rollDice();
+    }
 
 });
