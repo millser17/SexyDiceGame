@@ -1,54 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Dice Music</title>
+    <title>Audio Test</title>
 </head>
 <body>
 
-<h1>Dice Music</h1>
+<h1>Audio Test</h1>
 
-<div id="setup">
+<button id="testBtn">Play Song</button>
 
-    <input id="p1" placeholder="Player 1 Name">
-    <br><br>
+<audio id="player" controls></audio>
 
-    <select id="p1Song"></select>
+<script>
+const player = document.getElementById("player");
 
-    <br><br>
+document.getElementById("testBtn").addEventListener("click", async () => {
 
-    <input id="p2" placeholder="Player 2 Name">
-    <br><br>
+    player.src = "./music/song1.mp3";
 
-    <select id="p2Song"></select>
+    try {
+        await player.play();
+        console.log("playing");
+    } catch (err) {
+        console.log("FAILED:", err);
+    }
 
-    <br><br>
-
-    <button id="startBtn">Start Game</button>
-
-</div>
-
-<hr>
-
-<div id="game" style="display:none;">
-
-    <h2 id="activePlayer"></h2>
-
-    <button id="rollBtn">Roll Dice</button>
-
-    <p id="output"></p>
-    <p id="counter"></p>
-
-    <h3>Now Playing</h3>
-    <p id="nowPlaying"></p>
-
-    <h3>Queue</h3>
-    <ul id="queueList"></ul>
-
-    <audio id="player" controls></audio>
-
-</div>
-
-<script src="script.js"></script>
+});
+</script>
 
 </body>
 </html>
