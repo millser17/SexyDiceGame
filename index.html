@@ -1,22 +1,68 @@
-<h1>Dice Music</h1>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dice Music</title>
+</head>
+<body>
 
-<div id="setup">
-  <input id="p1" placeholder="Player 1 name">
-  <input id="p2" placeholder="Player 2 name">
-  <button id="startBtn">Start Game</button>
-</div>
+    <h1>Dice Music</h1>
 
-<hr>
+    <div id="setup">
 
-<div id="game" style="display:none;">
-  <h2 id="activePlayer">Player: -</h2>
+        <div>
+            <input id="p1" placeholder="Player 1 Name">
+        </div>
 
-  <button id="rollBtn">Roll Dice</button>
+        <br>
 
-  <p id="output">Roll result will appear here</p>
-  <p id="counter">Roll count: 0</p>
+        <div>
+            <input id="p2" placeholder="Player 2 Name">
+        </div>
 
-  <audio id="player" controls></audio>
-</div>
+        <br>
 
-<script src="script.js"></script>
+        <div>
+            <label for="songSelect">Starting Song:</label>
+
+            <select id="songSelect">
+                <option value="0">Song 1</option>
+                <option value="1">Song 2</option>
+            </select>
+        </div>
+
+        <br>
+
+        <button id="startBtn">
+            Start Game
+        </button>
+
+    </div>
+
+    <hr>
+
+    <div id="game" style="display:none;">
+
+        <h2 id="activePlayer">
+            Current Player
+        </h2>
+
+        <button id="rollBtn">
+            Roll Dice
+        </button>
+
+        <p id="output">
+            Roll result will appear here
+        </p>
+
+        <p id="counter">
+            Roll Count: 0
+        </p>
+
+        <audio id="player" controls></audio>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
