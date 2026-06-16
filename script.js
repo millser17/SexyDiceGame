@@ -1,3 +1,5 @@
+window.addEventListener("DOMContentLoaded", () => {
+
 // -------------------- SONG LIBRARY --------------------
 
 const allSongs = [
@@ -83,7 +85,6 @@ function updateNowPlaying(song) {
 // -------------------- SONG ENGINE --------------------
 
 function getNextUnusedSong() {
-
     return availableSongs.shift() || null;
 }
 
@@ -154,9 +155,7 @@ function rollDice() {
     rollCount++;
     counter.textContent = `Rolls: ${rollCount}`;
 
-    // RULE: roll = 5 OR every 7 rolls
     if (total === 5 || rollCount % 7 === 0) {
-
         const next = getNextUnusedSong();
         if (next) addSongToQueue(next);
     }
@@ -177,12 +176,10 @@ document.getElementById("startBtn").addEventListener("click", () => {
     player1Song = allSongs[p1Index];
     player2Song = allSongs[p2Index];
 
-    // remove chosen songs from available pool
     availableSongs = allSongs.filter(s =>
         s !== player1Song && s !== player2Song
     );
 
-    // initial queue
     playQueue.push(player1Song);
     playQueue.push(player2Song);
 
@@ -202,7 +199,6 @@ document.getElementById("startBtn").addEventListener("click", () => {
 document.getElementById("rollBtn").addEventListener("click", rollDice);
 
 document.addEventListener("keydown", (e) => {
-
     if (e.code === "Space" && game.style.display !== "none") {
         e.preventDefault();
         rollDice();
@@ -210,3 +206,5 @@ document.addEventListener("keydown", (e) => {
 });
 
 player.addEventListener("ended", playNextSong);
+
+});
