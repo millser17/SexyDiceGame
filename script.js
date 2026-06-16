@@ -1,18 +1,14 @@
 window.addEventListener("DOMContentLoaded", () => {
 
-// -------------------- SONG LIBRARY --------------------
-
 const allSongs = [
     { name: "Song 1", file: "./music/song1.mp3" },
     { name: "Song 2", file: "./music/song2.mp3" },
     { name: "Song 3", file: "./music/song3.mp3" }
 ];
 
-// -------------------- STATE --------------------
-
-let availableSongs = [...allSongs];
-let usedSongs = [];
-let playQueue = [];
+// STATE
+let queue = [];
+let used = [];
 
 let rollCount = 0;
 let currentPlayer = 1;
@@ -23,10 +19,9 @@ let player2Name = "Player 2";
 let player1Song = null;
 let player2Song = null;
 
-// -------------------- ELEMENTS --------------------
-
-const p1SongSelect = document.getElementById("p1Song");
-const p2SongSelect = document.getElementById("p2Song");
+// ELEMENTS
+const p1Song = document.getElementById("p1Song");
+const p2Song = document.getElementById("p2Song");
 
 const output = document.getElementById("output");
 const counter = document.getElementById("counter");
@@ -40,97 +35,92 @@ const player = document.getElementById("player");
 const setup = document.getElementById("setup");
 const game = document.getElementById("game");
 
-// -------------------- INIT DROPDOWNS --------------------
+// INIT DROPDOWNS
+function fillDropdowns() {
 
-function populateSongDropdowns() {
+    p1Song.innerHTML = "";
+    p2Song.innerHTML = "";
 
-    p1SongSelect.innerHTML = "";
-    p2SongSelect.innerHTML = "";
+    allSongs.forEach((song, i) => {
 
-    allSongs.forEach((song, index) => {
+        const o1 = document.createElement("option");
+        o1.value = i;
+        o1.textContent = song.name;
+        p1Song.appendChild(o1);
 
-        const opt1 = document.createElement("option");
-        opt1.value = index;
-        opt1.textContent = song.name;
-        p1SongSelect.appendChild(opt1);
-
-        const opt2 = document.createElement("option");
-        opt2.value = index;
-        opt2.textContent = song.name;
-        p2SongSelect.appendChild(opt2);
+        const o2 = document.createElement("option");
+        o2.value = i;
+        o2.textContent = song.name;
+        p2Song.appendChild(o2);
     });
 }
 
-populateSongDropdowns();
+fillDropdowns();
 
-// -------------------- QUEUE SYSTEM --------------------
-
-function updateQueueUI() {
-
+// QUEUE UI
+function renderQueue() {
     queueList.innerHTML = "";
-
-    playQueue.forEach(song => {
-
+    queue.forEach(s => {
         const li = document.createElement("li");
-        li.textContent = song.name;
+        li.textContent = s.name;
         queueList.appendChild(li);
     });
 }
 
-function updateNowPlaying(song) {
-
+function setNowPlaying(song) {
     nowPlaying.textContent = song ? song.name : "None";
 }
 
-// -------------------- SONG ENGINE --------------------
+// SONG ENGINE
+function getNextSong() {
 
-function getNextUnusedSong() {
-    return availableSongs.shift() || null;
+    const next = allSongs.find(s => !used.includes(s));
+
+    if (!next) return null;
+
+    used.push(next);
+    return next;
 }
 
-function addSongToQueue(song) {
+function addToQueue(song) {
 
     if (!song) return;
 
-    playQueue.push(song);
-    usedSongs.push(song);
-
-    updateQueueUI();
+    queue.push(song);
+    renderQueue();
 }
 
-function playNextSong() {
+function playNext() {
 
-    if (playQueue.length === 0) {
-
-        const next = getNextUnusedSong();
-        if (next) addSongToQueue(next);
+    if (queue.length === 0) {
+        const next = getNextSong();
+        if (next) addToQueue(next);
     }
 
-    const song = playQueue.shift();
-
+    const song = queue.shift();
     if (!song) return;
 
     player.src = song.file;
-    player.play();
 
-    updateNowPlaying(song);
-    updateQueueUI();
+    const playPromise = player.play();
+    if (playPromise) {
+        playPromise.catch(() => {});
+    }
+
+    setNowPlaying(song);
+    renderQueue();
 }
 
-// -------------------- GAME LOGIC --------------------
+// GAME LOGIC
+function updatePlayer() {
 
-function updatePlayerDisplay() {
-
-    const name =
+    activePlayer.textContent =
         currentPlayer === 1 ? player1Name : player2Name;
-
-    activePlayer.textContent = `Current Player: ${name}`;
 }
 
 function switchPlayer() {
-
     currentPlayer = currentPlayer === 1 ? 2 : 1;
-    updatePlayerDisplay();
+    updatePlayer();
 }
 
 function rollDice() {
@@ -142,60 +132,52 @@ function rollDice() {
     const name =
         currentPlayer === 1 ? player1Name : player2Name;
 
-    let text = "";
+    const hard =
+        d1 === d2 && [4,6,8,10].includes(total);
 
-    if (d1 === d2 && [4,6,8,10].includes(total)) {
-        text = `${name} rolled HARD ${total}! (${d1}+${d2})`;
-    } else {
-        text = `${name} rolled ${d1} + ${d2} = ${total}`;
-    }
-
-    output.textContent = text;
+    output.textContent =
+        hard
+        ? `${name} rolled HARD ${total}! (${d1}+${d2})`
+        : `${name} rolled ${d1} + ${d2} = ${total}`;
 
     rollCount++;
     counter.textContent = `Rolls: ${rollCount}`;
 
     if (total === 5 || rollCount % 7 === 0) {
-        const next = getNextUnusedSong();
-        if (next) addSongToQueue(next);
+        const next = getNextSong();
+        addToQueue(next);
     }
 
     switchPlayer();
 }
 
-// -------------------- START GAME --------------------
-
+// START GAME
 document.getElementById("startBtn").addEventListener("click", () => {
 
     player1Name = document.getElementById("p1").value || "Player 1";
     player2Name = document.getElementById("p2").value || "Player 2";
 
-    const p1Index = parseInt(p1SongSelect.value);
-    const p2Index = parseInt(p2SongSelect.value);
+    const p1 = parseInt(p1Song.value);
+    const p2 = parseInt(p2Song.value);
 
-    player1Song = allSongs[p1Index];
-    player2Song = allSongs[p2Index];
+    player1Song = allSongs[p1];
+    player2Song = allSongs[p2];
 
-    availableSongs = allSongs.filter(s =>
-        s !== player1Song && s !== player2Song
-    );
+    used = [player1Song, player2Song];
 
-    playQueue.push(player1Song);
-    playQueue.push(player2Song);
+    queue = [player1Song, player2Song];
 
     setup.style.display = "none";
     game.style.display = "block";
 
     currentPlayer = 1;
-    updatePlayerDisplay();
+    updatePlayer();
 
-    updateQueueUI();
-
-    playNextSong();
+    renderQueue();
+    playNext();
 });
 
-// -------------------- EVENTS --------------------
-
+// EVENTS
 document.getElementById("rollBtn").addEventListener("click", rollDice);
 
 document.addEventListener("keydown", (e) => {
@@ -205,6 +187,6 @@ document.addEventListener("keydown", (e) => {
     }
 });
 
-player.addEventListener("ended", playNextSong);
+player.addEventListener("ended", playNext);
 
 });
