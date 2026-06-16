@@ -1,30 +1,15 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>Audio Test</title>
-</head>
 <body>
 
-<h1>Audio Test</h1>
-
-<button id="testBtn">Play Song</button>
-
-<audio id="player" controls></audio>
+<button id="testBtn">CLICK ME</button>
 
 <script>
-const player = document.getElementById("player");
+console.log("script loaded");
 
-document.getElementById("testBtn").addEventListener("click", async () => {
-
-    player.src = "./music/song1.mp3";
-
-    try {
-        await player.play();
-        console.log("playing");
-    } catch (err) {
-        console.log("FAILED:", err);
-    }
-
+document.getElementById("testBtn").addEventListener("click", () => {
+    console.log("button clicked");
+    alert("button works");
 });
 </script>
 
